@@ -1,26 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends Component {
+  constructor() {
+    super()
+    this.state = {
+      loading: true,
+      data: null
+    }
+    this.loadData();
+  }
+
+  loadData(){
+    fetch('https://jsonplaceholder.typicode.com/users')
+    .then(res => res.json())
+    .then(json => {
+      this.setState({
+        loading: false,
+        data: json
+      })
+    })
+  }
+
+  customRender(){
+    if(this.state.loading) {
+      return(<p>Loading...</p>)
+    }else {
+      let getData = this.state.data;
+
+      const output = getData.map(d => {
+        return(
+        <div key = {d.id}>
+          <p> Name: {d.name} | Email: {d.email}</p>
+        </div>
+        )
+      })
+      return output
+    }
+  }
+  render() {
+    return (
+      <div align="center">
+        <h3>Fetch API Using React js </h3>
+        {this.customRender()}
+      </div>
+    )
+  }
 }
-
-export default App;
